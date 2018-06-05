@@ -1,0 +1,23 @@
+{
+  "name": "lisp-interpreter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ags1773/lisp-Interpreter.git"
+  },
+  "author": "amogh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ags1773/lisp-Interpreter/issues"
+  },
+  "homepage": "https://github.com/ags1773/lisp-Interpreter#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3"
+  }
+}
