@@ -68,12 +68,13 @@ const env = {
     env[arr[0]] = arr[1]
     return arr[1]
   },
+  // 'area': (radius) => Math.PI * radius * radius,
   'list': (arr) => '('.concat(arr.join(' ')).concat(')')
 }
 
 // parse('(+ 2 03)') will return null because of numberParser logic. This is okay
 function parse (str) {
-  return parsers.expressionParser(str) || parsers.numberParser(str) || parsers.stringParser(str)
+  return parsers.expressionParser(str) || parsers.numberParser(str) || parsers.stringParser(str) || parsers.findInEnv(str)
 }
 
 function computeValue (operation, arr) {
@@ -119,19 +120,19 @@ let parsers = {
     if (!reTest) return null
     return [reTest[0].slice(1, -1), str.slice(reTest[0].length)]
   },
-  // quoteParser: function (str) {
-  //   console.log(`Inside quoteParser, str=${str}`)
-  //   str = removeWhiteSpaces(str)
-  //   let reTest1 = /^'\s*\([^)]*\)/.exec(str)
-  //   let reTest2 = /^quote\s*\([^)]*\)/.exec(str)
-  //   if (!(reTest1 || reTest2)) { console.log('Quote parser returning null!'); return null }
-  //   return reTest1
-  //     ? [removeWhiteSpaces(reTest1[0].slice(1)), removeWhiteSpaces(str.slice(reTest1[0].length))]
-  //     : [removeWhiteSpaces(reTest2[0].slice(5)), removeWhiteSpaces(str.slice(reTest2[0].length))]
-  // },
   numberParser: function (str) {
     let reTest = /^-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/.exec(str)
     if (/^-?0+[1-9]+/.test(str) || !reTest) return null
     return [Number(reTest[0]), str.slice(reTest[0].length)]
+  },
+  findInEnv: function (str) {
+    let key = str.match(/^[^\s)]*/)
+    if (key) {
+      if (env.hasOwnProperty(key[0])) {
+        str = str.slice(key.length)
+        str = removeWhiteSpaces(str)
+        return env[key[0]]
+      }
+    }
   }
 }

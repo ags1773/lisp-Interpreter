@@ -68,13 +68,13 @@ const env = {
     env[arr[0]] = arr[1]
     return arr[1]
   },
-  'list': (arr) => '('.concat(arr.join(' ')).concat(')'),
-  'quote': (exp) => exp
+  'area': (radius) => Math.PI * radius * radius,
+  'list': (arr) => '('.concat(arr.join(' ')).concat(')')
 }
 
 // parse('(+ 2 03)') will return null because of numberParser logic. This is okay
 function parse (str) {
-  return parsers.expressionParser(str) || parsers.numberParser(str) || parsers.stringParser(str)
+  return parsers.expressionParser(str) || parsers.numberParser(str) || parsers.stringParser(str) || parsers.findInEnv(str)
 }
 
 function computeValue (operation, arr) {
@@ -89,32 +89,22 @@ function removeWhiteSpaces (data) {
 
 let parsers = {
   expressionParser: function (str) {
+    // console.log(`Inside expressionPaeser, str =${str}`)
     str = removeWhiteSpaces(str)
     if (str.charAt(0) === '(') {
       let output = []
-      let operator
       str = str.slice(1)
       str = removeWhiteSpaces(str)
-      let quoteParserOutput = parsers.quoteParser(str)
-      console.log(`quoteParserOutput =${quoteParserOutput}`)
 
-      if (!quoteParserOutput) {
-        console.log(`Parsing expression, str =>${str}`)
-        operator = str.match(/^[^\s]*/)[0]
-        str = str.slice(operator.length)
-        str = removeWhiteSpaces(str)
+      let operator = str.match(/^[^\s]*/)[0]
+      str = str.slice(operator.length)
+      str = removeWhiteSpaces(str)
 
-        while (str.charAt(0) !== ')') {
-          let temp = parse(str)
-          if (!temp) return null
-          output.push(temp[0])
-          str = removeWhiteSpaces(temp[1])
-        }
-      } else {
-        output.push(quoteParserOutput[0])
-        str = removeWhiteSpaces(quoteParserOutput[1])
-        operator = 'quote'
-        return [computeValue(operator, output), str]
+      while (str.charAt(0) !== ')') {
+        let temp = parse(str)
+        if (!temp) return null
+        output.push(temp[0])
+        str = removeWhiteSpaces(temp[1])
       }
 
       if (str.charAt(0) === ')') {
@@ -122,8 +112,6 @@ let parsers = {
         str = removeWhiteSpaces(str)
         if (env.hasOwnProperty(operator)) return [computeValue(operator, output), str]
         console.error(`${operator} operation is undefined`)
-        return
-        // keep this return
       }
     } else return null
   },
@@ -137,23 +125,14 @@ let parsers = {
     if (/^-?0+[1-9]+/.test(str) || !reTest) return null
     return [Number(reTest[0]), str.slice(reTest[0].length)]
   },
-  quoteParser: function (str) {
-    str = removeWhiteSpaces(str)
-    console.log(`Quote parser, str=${str}`)
-    let reTest1 = str.match(/^'\s*\([^)]*\)/)
-    let reTest2 = str.match(/^quote\s*\([^)]*\)/)
-    if (reTest1) reTest1 = reTest1[0]
-    if (reTest2) reTest2 = reTest2[0]
-    if (!(reTest1 || reTest2)) { console.log('Quote parser returning null!'); return null }
-    return reTest1
-      ? [removeWhiteSpaces(reTest1.slice(1)), str.slice(reTest1.length)]
-      : [removeWhiteSpaces(reTest2.slice(5)), str.slice(reTest2.length)]
-    //
-    // let reTest1 = /^'\s*\([^)]*\)/.exec(str)
-    // let reTest2 = /^quote\s*\([^)]*\)/.exec(str)
-    // if (!(reTest1 || reTest2)) { console.log('Quote parser returning null!'); return null }
-    // return reTest1
-    //   ? [removeWhiteSpaces(reTest1[0].slice(1)), str.slice(reTest1[0].length)]
-    //   : [removeWhiteSpaces(reTest2[0].slice(5)), str.slice(reTest2[0].length)]
+  findInEnv: function (str) {
+    let key = str.match(/^[^\s)]*/)
+    if (key) {
+      if (env.hasOwnProperty(key[0])) {
+        str = str.slice(key.length)
+        str = removeWhiteSpaces(str)
+        return env[key[0]]
+      }
+    }
   }
 }
