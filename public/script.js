@@ -72,9 +72,10 @@ const env = {
   'list': (arr) => '('.concat(arr.join(' ')).concat(')')
 }
 
-// parse('(+ 2 03)') will return null because of numberParser logic. This is okay
+// parsers.findInEnv() should come first
 function parse (str) {
-  return parsers.expressionParser(str) || parsers.numberParser(str) || parsers.stringParser(str) || parsers.findInEnv(str)
+  return parsers.findInEnv(str) || parsers.expressionParser(str) || parsers.numberParser(str) ||
+  parsers.stringParser(str) || parsers.symbolParser(str)
 }
 
 function computeValue (operation, arr) {
@@ -120,18 +121,24 @@ let parsers = {
     if (!reTest) return null
     return [reTest[0].slice(1, -1), str.slice(reTest[0].length)]
   },
+  symbolParser: function (str) {
+    let reTest = /^[a-zA-Z]+/.exec(str)
+    if (!reTest) return null
+    return [reTest[0], str.slice(reTest[0].length)]
+  },
   numberParser: function (str) {
     let reTest = /^-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/.exec(str)
     if (/^-?0+[1-9]+/.test(str) || !reTest) return null
     return [Number(reTest[0]), str.slice(reTest[0].length)]
   },
   findInEnv: function (str) {
+    str = removeWhiteSpaces(str)
     let key = str.match(/^[^\s)]*/)
     if (key) {
       if (env.hasOwnProperty(key[0])) {
         str = str.slice(key.length)
         str = removeWhiteSpaces(str)
-        return env[key[0]]
+        return [env[key[0]], removeWhiteSpaces(str)]
       }
     }
   }
