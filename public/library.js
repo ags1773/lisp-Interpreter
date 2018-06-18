@@ -57,5 +57,7 @@ const lib = {
       return null
     }
     return !(arr[0] % 2) ? '#t' : '#f'
-  }
+  },
+  'if': 3,
+  'define': 4
 }
