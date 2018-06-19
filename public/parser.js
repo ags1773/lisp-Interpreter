@@ -1,9 +1,10 @@
 'use strict'
 
 const re = {
-  atom: /^(-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?)|([a-zA-Z]+)*/,
+  atom: /^(-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?)|"([^\\"]|\\"|\\\\|\\\/|\\b|\\f|\\n|\\r|\\t|\\u[\dA-Fa-f]{4})*"/,
   num: /^-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?$/,
-  symbol: /^[a-zA-Z]+$/
+  symbol: /^[a-zA-Z]+$/,
+  str: /^"([^\\"]|\\"|\\\\|\\\/|\\b|\\f|\\n|\\r|\\t|\\u[\dA-Fa-f]{4})*"/
 }
 
 function parse (str) {
@@ -51,7 +52,8 @@ const parsers = {
       }
 
       let output = []
-      output.push(operator[0])
+      // output.push(operator[0])
+      output.push({type: 'identifier', value: operator[0]})
       str = str.slice(operator[0].length)
       str = removeWhiteSpaces(str)
 
@@ -62,18 +64,29 @@ const parsers = {
           str = removeWhiteSpaces(str)
         }
         let atom = str.match(re.atom)
-        if (atom[0]) {
+        if (atom) {
           if (re.num.test(atom[0])) {
-            output.push(Number(atom[0]))
-          } else output.push(atom[0])
+            // output.push(Number(atom[0]))
+            output.push({type: 'literal', value: Number(atom[0])})
+          } else if (re.str.test(atom[0])) {
+            output.push({type: 'literal', value: atom[0].slice(1, -1)})
+          } else output.push({type: 'literal', value: atom[0]})
           str = str.slice(atom[0].length)
           str = removeWhiteSpaces(str)
+        } else {
+          console.error('Invalid Input')
+          return
         }
         if (str.length === 0) {
           console.error('Unmatched parentheses')
           return null
         }
       }
+      str = str.slice(1)
+      str = removeWhiteSpaces(str)
+
+      if (str.length !== 0) return this.parse(str)
+
       return output.includes(null) ? null : output
     } else console.error('Invalid Input')
   },
@@ -95,10 +108,6 @@ const parsers = {
         str = str.slice(argument.length)
         str = removeWhiteSpaces(str)
       }
-      // else {
-      //   console.error('Invalid argument to lambda')
-      //   return
-      // }
     }
     str = str.slice(1)
     str = removeWhiteSpaces(str)
