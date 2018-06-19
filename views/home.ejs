@@ -14,13 +14,30 @@
     body{
       background-color: powderblue;
     }
+    #ta1{
+      width: 100%;
+    }
+    #btn1, #btn2, #btn3{
+      width: 100%;
+      height: 3rem;
+      margin: 0.2em 0;
+    }
   </style>
 </head>
 <body>
   <h2>Lisp (Scheme) Interpreter</h2>
-  <!-- <img src="lispinterpreter.png"> -->
+  <h3>Input -></h3>
+  <textarea id='ta1' rows="15"></textarea>
+  <button id='btn1'>Submit</button>
+  <button id='btn2'>Clear console</button>
+  <button id='btn3'>Clear Everything</button>
+  <br>
+  <hr>
+  <h3>Parser</h3>
+  <img src="lispinterpreter.png">
   <script src="library.js"></script>
   <script src="parser.js"></script>
   <script src="interpreter.js"></script>
+  <script src="io.js"></script>
 </body>
 </html>

@@ -7,9 +7,13 @@ const re = {
 }
 
 function parse (str) {
-  if (str.match(/\(/g).length !== str.match(/\)/g).length) {
-    console.error('Unmatched parentheses')
-    return null
+  let br1 = str.match(/\(/g)
+  let br2 = str.match(/\)/g)
+  if (br1 && br2) {
+    if (br1.length !== br2.length) { // preliminary check for unmatched brackets
+      console.error('Unmatched parentheses')
+      return null
+    }
   }
   return parsers.parse(str)
 }
@@ -75,7 +79,31 @@ const parsers = {
   },
 
   lambdaParser: function (str) {
-    console.log('inside lambda parser')
+    let output = ['lambda']
+    str = str.slice(6)
+    str = removeWhiteSpaces(str)
+    if (str.charAt(0) !== '(') {
+      console.error('Invalid lambda expression')
+      return
+    }
+    str = str.slice(1)
+    str = removeWhiteSpaces(str)
+    while (str.charAt(0) !== ')') {
+      let argument = str.match(re.symbol)
+      if (argument) {
+        output.push(argument[0])
+        str = str.slice(argument.length)
+        str = removeWhiteSpaces(str)
+      }
+      // else {
+      //   console.error('Invalid argument to lambda')
+      //   return
+      // }
+    }
+    str = str.slice(1)
+    str = removeWhiteSpaces(str)
+    output.push(this.parse(str))
+    return output
   }
 }
 
@@ -84,3 +112,5 @@ function removeWhiteSpaces (data) {
   if (!reTest) return data
   return data.slice(reTest[0].length)
 }
+
+// (lambda (x) (+ x x))
