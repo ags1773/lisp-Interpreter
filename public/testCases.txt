@@ -1,32 +1,3 @@
-(+ 2 3)                             --> 5
-(+ 2 (* 3 4 ) 3 )                   --> 17
-(+ (- 7 2) (+ 3 (- 10 (+ 2 3))))    --> 13
-(equal? 5 6)                        --> false
-(> (* 2 (- 7 4)) (* 2 1))           --> true
-( ( lambda ( x ) x ) "Lisp" )       --> "Lisp"
-(( lambda (x) (* x x) )  5)         --> 25
-
-------- IGNORE --------
-((if #f + *) 3 4)                   --> 12
-( (if #t + *) 3 4)                   --> 7
------------------------
-
-(if (= 1 2) (define r 10) (define r 15))    ==> to parse
-['if', ['=', 1, 2], ['define', 'r', 10], ['define', 'r', 15]]   ==> parser output
-
-parser will check if 'if','define', 'r','=' exist in environment. If not, throw an error
-
--> atom is undivisible further and is either a number or a symbol
--> symbol is string of one or more characters that do not include spaces
--> Lists are 0 or more atoms inside parenthesis
--> procedure is a list where the 1st element is an operator which specifies the function to be executed
-    other elements are arguments to the function
-***FIRST ELEMENT OF PROCEDURE IS ALWAYS AN OPERATOR!! (first (2 3 4)) IS INVALID
-
-LISPinJS-> (if (= 1 2) (define r 10) (define r 15))
-PP output =>=,1,2
-PP output =>define,r,10
-PP output =>define,r,15
-PP output =>if,=,1,2,define,r,10,define,r,15
-15
-LISPinJS-> 
+Known bugs: 
+(+ 2 3) (+ 4 5) => outputs 5, not 9 (Parser issue)
+(+ 1 (+ 1 (+ 1 1)) 1 1) => outputs 4, not 6 (Parser issue)

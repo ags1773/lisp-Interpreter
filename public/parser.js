@@ -36,7 +36,9 @@ const parsers = {
         str = str.slice(1)
         str = removeWhiteSpaces(str)
         if (str.length === 0) return '()'
-        return this.parse(str)
+        let temp = this.parse(str)
+        str = temp[1]
+        return temp[0]
       }
 
       let operator = str.match(/^\S+/)
@@ -59,9 +61,9 @@ const parsers = {
 
       while (str.charAt(0) !== ')') {
         if (str.charAt(0) === '(') {
-          output.push(this.parse(str))
-          str = str.slice(str.indexOf(')') + 1)
-          str = removeWhiteSpaces(str)
+          let temp = this.parse(str)
+          output.push(temp[0])
+          str = temp[1]
           continue // needed for 'if'. If not present, the '(' after 'if' is considered as operator, which is wrong
         }
         let atom = str.match(re.atom)
@@ -87,7 +89,8 @@ const parsers = {
       str = removeWhiteSpaces(str)
 
       // if (str.length !== 0) return this.parse(str) // (+ 2 3) (+ 4 5) => will parse (+ 4 5) and discard (+ 2 3)
-      return output.includes(null) ? null : output
+      // return output.includes(null) ? null : output
+      return output.includes(null) ? null : [output, str]
     } else console.error('Invalid Input')
   },
 

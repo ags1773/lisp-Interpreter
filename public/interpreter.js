@@ -49,10 +49,14 @@ let interpret = function (input, context) {
     return interpret(input, new Context(lib))
   } else if (input instanceof Array) {
     return interpretList(input, context)
-  } else if (input.type === 'identifier') {
+  } else if (input && input.type === 'identifier') {
     return context.get(input.value)
   } else {
-    return input.value
+    if (input) {
+      return input.value
+    } else {
+      console.error('Invalid input')
+    }
   }
 }
 
