@@ -46,7 +46,7 @@ const parsers = {
       }
       if (operator[0] === 'lambda') return this.lambdaParser(str)
 
-      if (!lib.hasOwnProperty(operator[0])) {
+      if (!lib.hasOwnProperty(operator[0]) && !special.hasOwnProperty(operator[0])) {
         console.error(`${operator[0]} function not found in library`)
         return null
       }
@@ -62,6 +62,7 @@ const parsers = {
           output.push(this.parse(str))
           str = str.slice(str.indexOf(')') + 1)
           str = removeWhiteSpaces(str)
+          continue // needed for 'if'. If not present, the '(' after 'if' is considered as operator, which is wrong
         }
         let atom = str.match(re.atom)
         if (atom) {
