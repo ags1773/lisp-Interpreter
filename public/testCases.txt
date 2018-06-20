@@ -1,3 +1,3 @@
-Known bugs: 
-(+ 2 3) (+ 4 5) => outputs 5, not 9 (Parser issue)
-(+ 1 (+ 1 (+ 1 1)) 1 1) => outputs 4, not 6 (Parser issue)
+(+ 2 3 (- 23 10 (/ 100 (* 2 5))) 1 2)	= 11
+(if (even? 3) (+ 1 1) (+ 5 9))		    = 14
+(if (even? 2) (+ 1 1) (+ 5 9))		    = 2

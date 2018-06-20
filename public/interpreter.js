@@ -1,29 +1,5 @@
 var special = {
-  // let: function(input, context) {
-  //   var letContext = input[1].reduce(function(acc, x) {
-  //     acc.scope[x[0].value] = interpret(x[1], context);
-  //     return acc;
-  //   }, new Context({}, context));
-
-  //   return interpret(input[2], letContext);
-  // },
-
-  lambda: function (input, context) {
-    return function () {
-      var lambdaArguments = arguments
-      // var lambdaScope = input[1].reduce(function(acc, x, i) {
-      //   acc[x.value] = lambdaArguments[i];
-      //   return acc;
-      // }, {});
-      var lambdaScope = input[1].reduce((acc, x, i) => {
-        acc[x.value] = lambdaArguments[i]
-        return acc
-      }, {})
-
-      return interpret(input[2], new Context(lambdaScope, context))
-    }
-  },
-
+  // lambda definition will come here
   if: function (input, context) {
     return interpret(input[1], context)
       ? interpret(input[2], context)
@@ -56,6 +32,7 @@ let interpret = function (input, context) {
       return input.value
     } else {
       console.error('Invalid input')
+      return null
     }
   }
 }
@@ -64,7 +41,6 @@ var interpretList = function (input, context) {
   if (input.length > 0 && input[0].value in special) {
     return special[input[0].value](input, context)
   } else {
-    // let list = input.map(function (x) { return interpret(x, context); });
     let list = input.map(x => interpret(x, context))
     if (list[0] instanceof Function) {
       return list[0].apply(undefined, [list.slice(1)])

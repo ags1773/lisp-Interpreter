@@ -1,0 +1,12 @@
+Known bugs: 
+(+ 2 3) (+ 4 5) => outputs 5, not 9 (Parser issue)
+(+ 1) will not throw error
+
+Solved:
+
+(+ 1 (+ 1 (+ 1 1)) 1 1) => outputs 4, not 6 (Parser issue)
+solution: 
+- alongwith output, made parse() function to return str too. so parse() now returns [output, str]
+- str = parse()[1] for the outer parse() function solves the problem
+----------------------------------------------
+

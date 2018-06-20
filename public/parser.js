@@ -62,9 +62,11 @@ const parsers = {
       while (str.charAt(0) !== ')') {
         if (str.charAt(0) === '(') {
           let temp = this.parse(str)
-          output.push(temp[0])
-          str = temp[1]
-          continue // needed for 'if'. If not present, the '(' after 'if' is considered as operator, which is wrong
+          if (temp) {
+            output.push(temp[0])
+            str = temp[1]
+            continue // needed for 'if'. If not present, the '(' after 'if' is considered as operator, which is wrong
+          }
         }
         let atom = str.match(re.atom)
         if (atom) {

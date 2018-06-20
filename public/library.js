@@ -1,88 +1,99 @@
 const lib = {
-  '+': function (arr) {
-    let acc = 0
-    for (let i = 0; i < arr.length; i++) {
-      acc = acc + arr[i]
-    }
-    return acc
+  '+': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '+', 2)) return null
+    return arr.reduce((a, b) => a + b)
   },
-  '-': function (arr) {
-    if (arr.length < 2) return null
-    let acc = arr[0]
-    for (let i = 1; i < arr.length; i++) {
-      acc = acc - arr[i]
-    }
-    return acc
+  '-': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '-', 2)) return null
+    return arr.reduce((a, b) => a - b)
   },
-  '*': function (arr) {
-    let acc = 1
-    for (let i = 0; i < arr.length; i++) {
-      acc = acc * arr[i]
-    }
-    return acc
+  '*': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '*', 2)) return null
+    return arr.reduce((a, b) => a * b)
   },
-  '/': function (arr) {
-    if (arr.length < 2) return null
-    let acc = arr[0]
-    for (let i = 1; i < arr.length; i++) {
-      acc = acc / arr[i]
-    }
-    return acc
+  '/': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '/', 2)) return null
+    return arr.reduce((a, b) => a / b)
   },
   '>': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '>', 2)) return null
     let o
     arr.reduce((a, b) => {
-      o = Number(a) > Number(b) ? '#t' : '#f'
+      o = Number(a) > Number(b) ? true : false
       return Number(b)
     })
-    return o || null
+    return o
   },
   '>=': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '>=', 2)) return null
     let o
     arr.reduce((a, b) => {
-      o = Number(a) >= Number(b) ? '#t' : '#f'
+      o = Number(a) >= Number(b) ? true : false
       return Number(b)
     })
-    return o || null
+    return o
   },
   '<': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '<', 2)) return null
     let o
     arr.reduce((a, b) => {
-      o = Number(a) < Number(b) ? '#t' : '#f'
+      o = Number(a) < Number(b) ? true : false
       return Number(b)
     })
-    return o || null
+    return o
   },
   '<=': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '<=', 2)) return null
     let o
     arr.reduce((a, b) => {
-      o = Number(a) <= Number(b) ? '#t' : '#f'
+      o = Number(a) <= Number(b) ? true : false
       return Number(b)
     })
-    return o || null
+    return o
   },
   'equal?': (arr) => {
-    if (arr.length !== 2) {
-      console.error(`equal? expects 2 arguments, got ${arr.length}`)
-      return null
-    }
-    return arr[0] === arr[1] ? '#t' : '#f'
+    if (!checks.nullCheck(arr) || !checks.lenExact(arr, 'equal?', 2)) return null
+    return arr[0] === arr[1] ? true : false
   },
   '=': (arr) => {
-    if (arr.length !== 2) {
-      console.error(`= expects 2 arguments, got ${arr.length}`)
-      return null
-    }
-    return arr[0] === arr[1] ? '#t' : '#f'
+    if (!checks.nullCheck(arr) || !checks.lenExact(arr, '=', 2)) return null
+    return arr[0] === arr[1] ? true : false
   },
-  'min': (arr) => Math.min(...arr),
-  'max': (arr) => Math.max(...arr),
+  'min': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, 'min', 1)) return null
+    return Math.min(...arr)
+  },
+  'max': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, 'max', 1)) return null
+    return Math.max(...arr)
+  },
   'even?': (arr) => {
-    if (arr.length !== 1) {
-      console.error(`even? expects 1 argument, got ${arr.length}`)
-      return null
-    }
-    return !(arr[0] % 2) ? '#t' : '#f'
+    if (!checks.nullCheck(arr) || !checks.lenExact(arr, 'even?', 1)) return null
+    return !(arr[0] % 2) ? true : false
   },
-  'define': 4
+  'odd?': (arr) => {
+    if (!checks.nullCheck(arr) || !checks.lenExact(arr, 'odd?', 1)) return null
+    return (arr[0] % 2) ? true : false
+  }
+}
+
+const checks = {
+  nullCheck: function (arr) {
+    if (arr.includes(null)) return false
+    return true
+  },
+  lenExact: function (arr, funcName, length) {
+    if (arr.length !== length) {
+      console.error(`${funcName} function expects ${length} argument(s), got ${arr.length}`)
+      return false
+    }
+    return true
+  },
+  lenAtLeast: function (arr, funcName, minLenth) {
+    if (arr.length < minLenth) {
+      console.error(`${funcName} function expects at least ${minLenth} argument(s), got ${arr.length}`)
+      return false
+    }
+    return true
+  }
 }
