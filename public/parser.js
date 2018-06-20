@@ -67,9 +67,9 @@ const parsers = {
         if (atom) {
           if (re.num.test(atom[0])) {
             // output.push(Number(atom[0]))
-            output.push({type: 'literal', value: Number(atom[0])})
+            output.push({type: 'number', value: Number(atom[0])})
           } else if (re.str.test(atom[0])) {
-            output.push({type: 'literal', value: atom[0].slice(1, -1)})
+            output.push({type: 'string', value: atom[0].slice(1, -1)})
           } else output.push({type: 'literal', value: atom[0]})
           str = str.slice(atom[0].length)
           str = removeWhiteSpaces(str)
@@ -85,34 +85,34 @@ const parsers = {
       str = str.slice(1)
       str = removeWhiteSpaces(str)
 
-      if (str.length !== 0) return this.parse(str)
-
+      // if (str.length !== 0) return this.parse(str) // (+ 2 3) (+ 4 5) => will parse (+ 4 5) and discard (+ 2 3)
       return output.includes(null) ? null : output
     } else console.error('Invalid Input')
   },
 
   lambdaParser: function (str) {
-    let output = ['lambda']
-    str = str.slice(6)
-    str = removeWhiteSpaces(str)
-    if (str.charAt(0) !== '(') {
-      console.error('Invalid lambda expression')
-      return
-    }
-    str = str.slice(1)
-    str = removeWhiteSpaces(str)
-    while (str.charAt(0) !== ')') {
-      let argument = str.match(re.symbol)
-      if (argument) {
-        output.push(argument[0])
-        str = str.slice(argument.length)
-        str = removeWhiteSpaces(str)
-      }
-    }
-    str = str.slice(1)
-    str = removeWhiteSpaces(str)
-    output.push(this.parse(str))
-    return output
+    // let output = ['lambda']
+    // str = str.slice(6)
+    // str = removeWhiteSpaces(str)
+    // if (str.charAt(0) !== '(') {
+    //   console.error('Invalid lambda expression')
+    //   return
+    // }
+    // str = str.slice(1)
+    // str = removeWhiteSpaces(str)
+    // while (str.charAt(0) !== ')') {
+    //   let argument = str.match(re.symbol)
+    //   if (argument) {
+    //     output.push(argument[0])
+    //     str = str.slice(argument.length)
+    //     str = removeWhiteSpaces(str)
+    //   }
+    // }
+    // str = str.slice(1)
+    // str = removeWhiteSpaces(str)
+    // output.push(this.parse(str))
+    // return output
+    ;
   }
 }
 
@@ -122,4 +122,4 @@ function removeWhiteSpaces (data) {
   return data.slice(reTest[0].length)
 }
 
-// (lambda (x) (+ x x))
+ // ((lambda (x) (+ x x)) 3)

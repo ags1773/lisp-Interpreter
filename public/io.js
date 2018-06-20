@@ -1,5 +1,11 @@
 document.querySelector('#btn1').addEventListener('click', function () {
-  console.log(parse(document.querySelector('#ta1').value))
+  let k = parse(document.querySelector('#ta1').value)
+  console.log('---------------------------')
+  console.log('Parser output =>')
+  console.log(k)
+  console.log('Interpreter output =>')
+  console.log(interpret(k))
+  console.log('---------------------------')
 })
 document.querySelector('#btn2').addEventListener('click', function () {  
   console.clear()
