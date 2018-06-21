@@ -1,7 +1,7 @@
 const lib = {
   '+': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '+', 2) || !checks.allNum('+', arr)) return null
-    return arr.reduce((a, b) => a + b)
+    return arr.reduce((a, b) => Number(a) + Number(b))
   },
   '-': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '-', 2) || !checks.allNum('-', arr)) return null
