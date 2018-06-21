@@ -53,11 +53,11 @@ const lib = {
   },
   'equal?': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenExact(arr, 'equal?', 2) || !checks.allNum('equal?', arr)) return null
-    return arr[0] === arr[1] ? true : false
+    return Number(arr[0]) === Number(arr[1]) ? true : false
   },
   '=': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenExact(arr, '=', 2) || !checks.allNum('=', arr)) return null
-    return arr[0] === arr[1] ? true : false
+    return Number(arr[0]) === Number(arr[1]) ? true : false
   },
   'min': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, 'min', 1) || !checks.allNum('min', arr)) return null

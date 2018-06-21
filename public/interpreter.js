@@ -2,7 +2,7 @@ const special = {
   lambda: function (input, context) {
     return function () {
       let lambdaArguments = arguments
-      let lambdaScope = input[1].reduce(function (acc, x, i) {
+      let lambdaScope = input[1].reduce((acc, x, i) => { // creates local scope for lambda to run
         acc[x.value] = lambdaArguments[i]
         return acc
       }, {})
@@ -16,10 +16,8 @@ const special = {
       : interpret(input[3], context)
   },
   define: function (input, context) {
-    // let key = interpret(input[1], context)
-    let key = context.get(input[1])
+    let key = input[1].value
     let value = interpret(input[2], context)
-    // context.scope[key] = value
     context.set(key, value)
   }
 }
@@ -39,7 +37,6 @@ let Context = function (scope, parent) {
   this.set = function (identifier, value) {
     this.scope[identifier] = value
   }
-  // this.find = function (identifier)
 }
 
 let interpret = function (input, context) {
@@ -49,11 +46,7 @@ let interpret = function (input, context) {
     return interpretList(input, context)
   } else if (input && input.type === 'identifier') {
     return context.get(input.value)
-  }
-  // else if (input && input.value in context.scope) {
-  //   return context.scope[input.value]
-  // } 
-  else {
+  } else {
     if (input) {
       return input.value
     } else {
