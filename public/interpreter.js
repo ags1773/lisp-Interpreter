@@ -1,9 +1,24 @@
-var special = {
-  // lambda definition will come here
+const special = {
+  // lambda: function (input, context) {
+  //   return function () {
+  //     let lambdaArguments = arguments
+  //     let lambdaScope = input[1].reduce(function (acc, x, i) {
+  //       acc[x.value] = lambdaArguments[i]
+  //       return acc
+  //     }, {})
+
+  //     return interpret(input[2], new Context(lambdaScope, context))
+  //   }
+  // },
   if: function (input, context) {
     return interpret(input[1], context)
       ? interpret(input[2], context)
       : interpret(input[3], context)
+  },
+  define: function (input, context) {
+    let key = interpret(input[1], context)
+    let value = interpret(input[2], context)
+    context.scope[key] = value
   }
 }
 
@@ -27,6 +42,8 @@ let interpret = function (input, context) {
     return interpretList(input, context)
   } else if (input && input.type === 'identifier') {
     return context.get(input.value)
+  } else if (input && input.value in context.scope) {
+    return context.scope[input.value]
   } else {
     if (input) {
       return input.value
@@ -37,7 +54,7 @@ let interpret = function (input, context) {
   }
 }
 
-var interpretList = function (input, context) {
+let interpretList = function (input, context) {
   if (input.length > 0 && input[0].value in special) {
     return special[input[0].value](input, context)
   } else {
