@@ -1,6 +1,10 @@
 Known bugs: 
 (+ 2 3) (+ 4 5) => outputs 5, not 9 (Parser issue)
 
+((lambda (x) (+ x x)) 5) returns 55. 
+Also, in interpreter, library function '+' is being called with (+ [5] [5]). It should be (+ 5 5)
+
+
 Solved:
 
 (+ 1 (+ 1 (+ 1 1)) 1 1) => outputs 4, not 6 (Parser issue)

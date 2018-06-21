@@ -2,7 +2,7 @@
 
 const re = {
   atom: /^(-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?)|"([^\\"]|\\"|\\\\|\\\/|\\b|\\f|\\n|\\r|\\t|\\u[\dA-Fa-f]{4})*"|[a-zA-Z]+/,
-  num: /^-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?$/,
+  num: /^-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
   symbol: /^[a-zA-Z]+$/,
   str: /^"([^\\"]|\\"|\\\\|\\\/|\\b|\\f|\\n|\\r|\\t|\\u[\dA-Fa-f]{4})*"/
 }
@@ -25,18 +25,30 @@ const parsers = {
     str = removeWhiteSpaces(str)
 
     if (re.num.test(str)) {
-      return [{type: 'number', value: Number(str)}]
+      let temp = []
+      temp.push({type: 'number', value: Number(str.match(re.num)[0])})
+      str = str.slice(str.match(re.num)[0].length)
+      str = removeWhiteSpaces(str)
+      temp.push(str)
+      return temp
     } else if (re.symbol.test(str)) {
-      return [{type: 'literal', value: str}]
+      let temp = []
+      temp.push({type: 'identifier', value: str})
+      str = str.slice(str.length)
+      str = removeWhiteSpaces(str)
+      temp.push(str)
+      return temp
     } else if (str.charAt(0) === '(') {
-      // if (str.match(/^\(\s*\(\s*lambda/)) {
-      //   let lambdaParserOutput = this.lambdaParser(str)
-      //   str = lambdaParserOutput[1]
-      //   str = removeWhiteSpaces(str)
-      //   return [lambdaParserOutput[0], str]
-      // }
       str = str.slice(1)
       str = removeWhiteSpaces(str)
+
+      if (/^\(\s*lambda/.test(str)) {
+        let lambdaParserOutput = this.lambdaParser(str)
+        if (lambdaParserOutput) {
+          str = lambdaParserOutput[1]
+          return [lambdaParserOutput[0], str]
+        } else return null
+      }
 
       if (str.charAt(0) === ')') { // () returns (); () 10 returns 10
         str = str.slice(1)
@@ -59,19 +71,18 @@ const parsers = {
       }
 
       let output = []
-      // output.push(operator[0])
       output.push({type: 'identifier', value: operator[0]})
       str = str.slice(operator[0].length)
       str = removeWhiteSpaces(str)
 
       while (str.charAt(0) !== ')') {
-        // if (str.match(/^\(\s*\(\s*lambda/)) {
-        //   let lambdaParserOutput = this.lambdaParser(str)
-        //   output.push(lambdaParserOutput[0])
-        //   str = lambdaParserOutput[1]
-        //   str = removeWhiteSpaces(str)
-        //   continue
-        // }
+        if (/^\(\s*lambda/.test(str)) {
+          let lambdaParserOutput = this.lambdaParser(str)
+          if (lambdaParserOutput) {
+            output.push(lambdaParserOutput[0])
+            str = lambdaParserOutput[1]
+          } else return null
+        }
 
         if (str.charAt(0) === '(') {
           let temp = this.parse(str)
@@ -79,16 +90,16 @@ const parsers = {
             output.push(temp[0])
             str = temp[1]
             continue // needed for 'if'. If not present, the '(' after 'if' is considered as operator, which is wrong
-          }
+          } else return null
         }
         let atom = str.match(re.atom)
         if (atom) {
           if (re.num.test(atom[0])) {
-            // output.push(Number(atom[0]))
             output.push({type: 'number', value: Number(atom[0])})
           } else if (re.str.test(atom[0])) {
             output.push({type: 'string', value: atom[0].slice(1, -1)})
-          } else output.push({type: 'literal', value: atom[0]})
+          } else output.push({type: 'identifier', value: atom[0]})
+          // } else output.push({type: 'literal', value: atom[0]})
           str = str.slice(atom[0].length)
           str = removeWhiteSpaces(str)
         } else {
@@ -104,58 +115,61 @@ const parsers = {
       str = removeWhiteSpaces(str)
 
       // if (str.length !== 0) return this.parse(str) // (+ 2 3) (+ 4 5) => will parse (+ 4 5) and discard (+ 2 3)
-      // return output.includes(null) ? null : output
       return output.includes(null) ? null : [output, str]
     } else console.error('Invalid Input')
   },
 
   lambdaParser: function (str) {
     // console.log(`Inside lambdaParser, str=>${str}`)
-    // return [{type: "number", value: 9}, str.slice(38)]
+    let finalOutput = []
+    str = str.slice(1)
+    str = removeWhiteSpaces(str)
+    str = str.slice(6)
+    str = removeWhiteSpaces(str)
+    let output = []
+    output.push({ type: 'identifier', value: 'lambda' })
 
-    // let output = ['lambda']
-    // str = str.slice(6)
-    // str = removeWhiteSpaces(str)
-    // if (str.charAt(0) !== '(') {
-    //   console.error('Invalid lambda expression')
-    //   return
-    // }
-    // str = str.slice(1)
-    // str = removeWhiteSpaces(str)
-    // while (str.charAt(0) !== ')') {
-    //   let argument = str.match(re.symbol)
-    //   if (argument) {
-    //     output.push(argument[0])
-    //     str = str.slice(argument.length)
-    //     str = removeWhiteSpaces(str)
-    //   }
-    // }
-    // str = str.slice(1)
-    // str = removeWhiteSpaces(str)
-    // output.push(this.parse(str))
-    // return output
+    if (str.charAt(0) !== '(') {
+      console.error('Invalid lambda expression')
+      return null
+    }
+    str = str.slice(1)
+    str = removeWhiteSpaces(str)
+    let lambdaArguments = []
+    while (str.charAt(0) !== ')') {
+      let argument = str.match(/^[a-zA-Z]+/)
+      if (argument) {
+        lambdaArguments.push({ type: 'identifier', value: argument[0] })
+        str = str.slice(argument[0].length)
+        str = removeWhiteSpaces(str)
+      }
+    }
+    output.push(lambdaArguments)
+    str = str.slice(1)
+    str = removeWhiteSpaces(str)
+    let temp = this.parse(str)
+    output.push(temp[0])
+    finalOutput.push(output)
+    str = temp[1]
+    str = removeWhiteSpaces(str)
+    str = str.slice(1)
+    str = removeWhiteSpaces(str)
 
-    // let output = ['lambda']
-    // str = str.slice(6)
-    // str = removeWhiteSpaces(str)
-    // if (str.charAt(0) !== '(') {
-    //   console.error('Invalid lambda expression')
-    //   return
-    // }
-    // str = str.slice(1)
-    // str = removeWhiteSpaces(str)
-    // while (str.charAt(0) !== ')') {
-    //   let argument = str.match(re.symbol)
-    //   if (argument) {
-    //     output.push(argument[0])
-    //     str = str.slice(argument.length)
-    //     str = removeWhiteSpaces(str)
-    //   }
-    // }
-    // str = str.slice(1)
-    // str = removeWhiteSpaces(str)
-    // output.push(this.parse(str))
-    // return output
+    while (str.charAt(0) !== ')') {
+      let temp = this.parse(str)
+      if (temp) {
+        finalOutput.push(temp[0])
+        str = temp[1]
+      } else {
+        console.error('Error in lambda parser')
+        return null
+      }
+    }
+    str = str.slice(1)
+    str = removeWhiteSpaces(str)
+    console.log(`LambdaParser output =>`)
+    console.log(finalOutput)
+    return [finalOutput, str]
   }
 }
 

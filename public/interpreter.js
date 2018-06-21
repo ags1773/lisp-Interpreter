@@ -1,24 +1,26 @@
 const special = {
-  // lambda: function (input, context) {
-  //   return function () {
-  //     let lambdaArguments = arguments
-  //     let lambdaScope = input[1].reduce(function (acc, x, i) {
-  //       acc[x.value] = lambdaArguments[i]
-  //       return acc
-  //     }, {})
+  lambda: function (input, context) {
+    return function () {
+      let lambdaArguments = arguments
+      let lambdaScope = input[1].reduce(function (acc, x, i) {
+        acc[x.value] = lambdaArguments[i]
+        return acc
+      }, {})
 
-  //     return interpret(input[2], new Context(lambdaScope, context))
-  //   }
-  // },
+      return interpret(input[2], new Context(lambdaScope, context))
+    }
+  },
   if: function (input, context) {
     return interpret(input[1], context)
       ? interpret(input[2], context)
       : interpret(input[3], context)
   },
   define: function (input, context) {
-    let key = interpret(input[1], context)
+    // let key = interpret(input[1], context)
+    let key = context.get(input[1])
     let value = interpret(input[2], context)
-    context.scope[key] = value
+    // context.scope[key] = value
+    context.set(key, value)
   }
 }
 
@@ -33,6 +35,11 @@ let Context = function (scope, parent) {
       return this.parent.get(identifier)
     }
   }
+
+  this.set = function (identifier, value) {
+    this.scope[identifier] = value
+  }
+  // this.find = function (identifier)
 }
 
 let interpret = function (input, context) {
@@ -42,9 +49,11 @@ let interpret = function (input, context) {
     return interpretList(input, context)
   } else if (input && input.type === 'identifier') {
     return context.get(input.value)
-  } else if (input && input.value in context.scope) {
-    return context.scope[input.value]
-  } else {
+  }
+  // else if (input && input.value in context.scope) {
+  //   return context.scope[input.value]
+  // } 
+  else {
     if (input) {
       return input.value
     } else {
