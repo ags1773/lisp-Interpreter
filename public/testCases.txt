@@ -7,3 +7,6 @@
 
 (define mulFive (lambda (x) (* x 5)))   defines mulFive in lib
 (mulFive 10)                            = 50
+
+(define mulWithSelf (lambda (x) (* x x)))
+(mulWithSelf (+ 2 (mulWithSelf 3)))     = 121

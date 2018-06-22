@@ -16,12 +16,8 @@ const special = {
       : interpret(input[3], context)
   },
   define: function (input, context) {
-    console.log('inside define')
-    console.log(input)
     let key = input[1].value
     let value = interpret(input[2], context)
-    console.log(`key =>${key}`)
-    console.log(value)
     context.set(key, value)
   }
 }
@@ -49,7 +45,10 @@ let interpret = function (input, context) {
   } else if (input instanceof Array) {
     return interpretList(input, context)
   } else if (input && input.type === 'identifier') {
-    return context.get(input.value)
+    let fetched = context.get(input.value)
+    if (fetched) return fetched
+    console.error(`${input.value} Not defined`)
+    return null
   } else {
     if (input) {
       return input.value
