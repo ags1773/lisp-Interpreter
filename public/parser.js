@@ -46,7 +46,14 @@ const parsers = {
         let lambdaParserOutput = this.lambdaParser(str)
         if (lambdaParserOutput) {
           str = lambdaParserOutput[1]
-          return [lambdaParserOutput[0], str]
+          let valuesToLambdaArgs = this.parse(str)
+
+          if (valuesToLambdaArgs) { // lambda function is to execute immediately
+            str = valuesToLambdaArgs[1]
+            return [[lambdaParserOutput[0], valuesToLambdaArgs[0]], str]
+          } else { // lambda is with define, and will not execute immediately
+            return [lambdaParserOutput[0], str]
+          }
         } else return null
       }
 
@@ -79,8 +86,14 @@ const parsers = {
         if (/^\(\s*lambda/.test(str)) {
           let lambdaParserOutput = this.lambdaParser(str)
           if (lambdaParserOutput) {
-            output.push(lambdaParserOutput[0])
             str = lambdaParserOutput[1]
+            let valuesToLambdaArgs = this.parse(str)
+            if (valuesToLambdaArgs) { // lambda function is to execute immediately
+              output.push([lambdaParserOutput[0], valuesToLambdaArgs[0]])
+              str = valuesToLambdaArgs[1]
+            } else { // lambda is with define, and will not execute immediately
+              output.push(lambdaParserOutput[0])
+            }
           } else return null
         }
 
@@ -99,13 +112,8 @@ const parsers = {
           } else if (re.str.test(atom[0])) {
             output.push({type: 'string', value: atom[0].slice(1, -1)})
           } else output.push({type: 'identifier', value: atom[0]})
-          // } else output.push({type: 'literal', value: atom[0]})
           str = str.slice(atom[0].length)
           str = removeWhiteSpaces(str)
-        } else {
-          // console.error('Invalid Input')
-          // return
-          ;
         }
         if (str.length === 0) {
           console.error('Unmatched parentheses')
@@ -117,11 +125,13 @@ const parsers = {
 
       // if (str.length !== 0) return this.parse(str) // (+ 2 3) (+ 4 5) => will parse (+ 4 5) and discard (+ 2 3)
       return output.includes(null) ? null : [output, str]
-    } else console.error('Invalid Input')
+    } else {
+      // console.error('Invalid Input')
+      return null
+    }
   },
 
   lambdaParser: function (str) {
-    // console.log(`Inside lambdaParser, str=>${str}`)
     let finalOutput = []
     str = str.slice(1)
     str = removeWhiteSpaces(str)
@@ -155,22 +165,6 @@ const parsers = {
     str = removeWhiteSpaces(str)
     str = str.slice(1)
     str = removeWhiteSpaces(str)
-
-    // while (str.charAt(0) !== ')') {
-    //   let temp = this.parse(str)
-    //   if (temp) {
-    //     finalOutput.push(temp[0])
-    //     str = temp[1]
-    //   } else {
-    //     console.error('Error in lambda parser')
-    //     return null
-    //   }
-    // }
-    // str = str.slice(1)
-    // str = removeWhiteSpaces(str)
-    console.log(`LambdaParser output =>`)
-    console.log(finalOutput)
-    // return [finalOutput, str]
     return [output, str]
   }
 }

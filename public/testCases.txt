@@ -10,3 +10,6 @@
 
 (define mulWithSelf (lambda (x) (* x x)))
 (mulWithSelf (+ 2 (mulWithSelf 3)))     = 121
+
+
+((lambda (x) (* x x)) 5)
