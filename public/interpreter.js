@@ -16,8 +16,12 @@ const special = {
       : interpret(input[3], context)
   },
   define: function (input, context) {
+    console.log('inside define')
+    console.log(input)
     let key = input[1].value
     let value = interpret(input[2], context)
+    console.log(`key =>${key}`)
+    console.log(value)
     context.set(key, value)
   }
 }

@@ -103,8 +103,9 @@ const parsers = {
           str = str.slice(atom[0].length)
           str = removeWhiteSpaces(str)
         } else {
-          console.error('Invalid Input')
-          return
+          // console.error('Invalid Input')
+          // return
+          ;
         }
         if (str.length === 0) {
           console.error('Unmatched parentheses')
@@ -155,21 +156,22 @@ const parsers = {
     str = str.slice(1)
     str = removeWhiteSpaces(str)
 
-    while (str.charAt(0) !== ')') {
-      let temp = this.parse(str)
-      if (temp) {
-        finalOutput.push(temp[0])
-        str = temp[1]
-      } else {
-        console.error('Error in lambda parser')
-        return null
-      }
-    }
-    str = str.slice(1)
-    str = removeWhiteSpaces(str)
+    // while (str.charAt(0) !== ')') {
+    //   let temp = this.parse(str)
+    //   if (temp) {
+    //     finalOutput.push(temp[0])
+    //     str = temp[1]
+    //   } else {
+    //     console.error('Error in lambda parser')
+    //     return null
+    //   }
+    // }
+    // str = str.slice(1)
+    // str = removeWhiteSpaces(str)
     console.log(`LambdaParser output =>`)
     console.log(finalOutput)
-    return [finalOutput, str]
+    // return [finalOutput, str]
+    return [output, str]
   }
 }
 

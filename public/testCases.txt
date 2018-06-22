@@ -4,3 +4,6 @@
 (+ 2 ((lambda (x) (* x x)) 5) 3 ((lambda (z) (* z 2)) 3) 4)     = 40
 (if ((lambda (x) (>= x 23)) 45) (+ 1 1) (+ 2 2))  = 2
 (if ((lambda (x) (>= x 23)) 40) "a" "b") = a
+
+(define mulFive (lambda (x) (* x 5)))   defines mulFive in lib
+(mulFive 10)                            = 50
