@@ -72,10 +72,11 @@ const parsers = {
         return null
       }
 
-      if (!lib.hasOwnProperty(operator[0]) && !special.hasOwnProperty(operator[0])) {
-        console.error(`${operator[0]} function not found in library`)
-        return null
-      }
+      // // commented out to parse recursive lambda functios like: (define fact (lambda (n) (if (<= n 1) 1 (* n (fact (- n 1))))))
+      // if (!lib.hasOwnProperty(operator[0]) && !special.hasOwnProperty(operator[0])) {
+      //   console.error(`${operator[0]} function not found in library`)
+      //   return null
+      // }
 
       let output = []
       output.push({type: 'identifier', value: operator[0]})

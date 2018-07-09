@@ -19,7 +19,7 @@ const lib = {
     if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '>', 2) || !checks.allNum('>', arr)) return null
     let o
     arr.reduce((a, b) => {
-      o = Number(a) > Number(b) ? true : false
+      o = Number(a) > Number(b)
       return Number(b)
     })
     return o
@@ -28,7 +28,7 @@ const lib = {
     if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '>=', 2) || !checks.allNum('>=', arr)) return null
     let o
     arr.reduce((a, b) => {
-      o = Number(a) >= Number(b) ? true : false
+      o = Number(a) >= Number(b)
       return Number(b)
     })
     return o
@@ -37,7 +37,7 @@ const lib = {
     if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '<', 2) || !checks.allNum('<', arr)) return null
     let o
     arr.reduce((a, b) => {
-      o = Number(a) < Number(b) ? true : false
+      o = Number(a) < Number(b)
       return Number(b)
     })
     return o
@@ -46,18 +46,18 @@ const lib = {
     if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, '<=', 2) || !checks.allNum('<=', arr)) return null
     let o
     arr.reduce((a, b) => {
-      o = Number(a) <= Number(b) ? true : false
+      o = Number(a) <= Number(b)
       return Number(b)
     })
     return o
   },
   'equal?': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenExact(arr, 'equal?', 2) || !checks.allNum('equal?', arr)) return null
-    return Number(arr[0]) === Number(arr[1]) ? true : false
+    return Number(arr[0]) === Number(arr[1])
   },
   '=': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenExact(arr, '=', 2) || !checks.allNum('=', arr)) return null
-    return Number(arr[0]) === Number(arr[1]) ? true : false
+    return Number(arr[0]) === Number(arr[1])
   },
   'min': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenAtLeast(arr, 'min', 1) || !checks.allNum('min', arr)) return null
@@ -69,11 +69,11 @@ const lib = {
   },
   'even?': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenExact(arr, 'even?', 1) || !checks.allNum('even?', arr)) return null
-    return !(arr[0] % 2) ? true : false
+    return !(arr[0] % 2)
   },
   'odd?': (arr) => {
     if (!checks.nullCheck(arr) || !checks.lenExact(arr, 'odd?', 1) || !checks.allNum('odd?', arr)) return null
-    return (arr[0] % 2) ? true : false
+    return (arr[0] % 2)
   }
 }
 
